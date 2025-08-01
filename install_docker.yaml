@@ -1,0 +1,35 @@
+---
+- name: Установка Docker
+  hosts: all
+  become: true
+  tasks:
+  - name: Обновление apt и установка зависимостей
+    apt:
+      update_cache: yes
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+      state: present
+
+  - name: Добавление GPG ключа для Docker
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: Добавление Docker репозитория
+    apt_repository:
+      repo: "deb [arch=amd64 by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu noble stable"
+      state: present
+
+  - name: Установка Docker
+    apt:
+      name: docker-ce
+      state: present
+
+  - name: Запуск и включениеDocker
+    service:
+      name: docker
+      state: started
+      enabled: yes

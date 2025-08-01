@@ -1,0 +1,43 @@
+- hosts: pc
+  become: true
+  tasks:
+    - name: Get list of running containers
+      command: docker ps -q
+      register: running_containers
+
+    - name: Stop all running containers
+      command: docker stop {{ running_containers.stdout }}
+      when: running_containers.stdout != ""
+
+    - name: Get list of all containers
+      command: docker ps -a -q
+      register: all_containers
+
+    - name: Remove all containers
+      command: docker rm {{ all_containers.stdout }}
+      when: all_containers.stdout != ""
+
+    - name: Get list of all images
+      command: docker images -q
+      register: all_images
+      ignore_errors: yes
+
+    - name: Remove all images
+      command: docker rmi {{ all_images.stdout }}
+      when: all_images.stdout != ""
+
+    - name: Uninstall Docker
+      apt:
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: absent
+
+    - name: Clean up residual files
+      file:
+        path: /var/lib/docker
+        state: absent
