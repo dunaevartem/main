@@ -3,7 +3,7 @@ sudo ansible-playbook -i inventoy.ini install_docker.yaml --ask-become-pass
 ### Команда для удаления  
 sudo ansible-playbook -i inventory.ini remove_docker.yaml --ask-become-pass  
   
-### Для установки требуется пробросить публичный ключ на сервера  
+### Для установки требуется пробросить публичный ключ на серверы  
 ssh-keygen -t rsa -b 2048 #создаем публичный ключ  
 ssh-copy-id username@your_server #копируем на сервера  
 ### в моем случае:  
